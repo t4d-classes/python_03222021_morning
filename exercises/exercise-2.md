@@ -12,6 +12,8 @@ Five Commands:
 - divide : /
 - clear - reset current result to 0
 
+Prompt the user for the command and the operand.
+
 - Enter a command: add
 - Please enter an operand: 10
 
