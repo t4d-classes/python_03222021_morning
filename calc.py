@@ -1,3 +1,16 @@
+
+def add_op(x, y):
+    return x + y
+
+
+calc_ops = [
+    (1, "Add", "add", add_op),
+    (2, "Subtract", "subtract", lambda x, y: x - y),
+    (3, "Multiply", "multiply", lambda x, y: x * y),
+    (4, "Divide", "divide", lambda x, y: x / y),
+    (5, "Exponent", "exponent", lambda x, y: x ** y),
+]
+
 history = []
 
 
@@ -36,43 +49,36 @@ def append_history_entry(history_list, op_name, op_value):
     history_list.append(new_history_entry)
 
 
-def calc_result(history_list):
+def get_calc_op_by_command(calc_ops_list, command_name):
+
+    for calc_op in calc_ops_list:
+        if calc_op[2] == command_name:
+            return calc_op
+
+
+def calc_result(history_list, calc_ops_list):
     result = 0
     for entry in history_list:
-        if entry[1] == "add":
-            result = result + entry[2]
-        elif entry[1] == "subtract":
-            result = result - entry[2]
-        elif entry[1] == "multiply":
-            result = result * entry[2]
-        elif entry[1] == "divide":
-            result = result / entry[2]
+        calc_op = get_calc_op_by_command(calc_ops_list, entry[1])
+        calc_op_fn = calc_op[3]
+        result = calc_op_fn(result, entry[2])
     return result
 
 
 def display_operation_counts(history_list):
 
-    add_op_counts = 0
-    subtract_op_counts = 0
-    multiply_op_counts = 0
-    divide_op_counts = 0
+    op_counts = []
 
-    for entry in history_list:
-        if entry[1] == "add":
-            add_op_counts += 1
-        elif entry[1] == "subtract":
-            subtract_op_counts += 1
-        elif entry[1] == "multiply":
-            multiply_op_counts += 1
-        elif entry[1] == "divide":
-            divide_op_counts += 1
+    for calc_op in calc_ops:
+        op_counts.append(
+            (calc_op[1],
+                len([entry for entry in history_list
+                    if entry[1] == calc_op[2]])))
 
     print("Op Counts")
     print("---------")
-    print(f"Add: {add_op_counts}")
-    print(f"Subtract: {subtract_op_counts}")
-    print(f"Multiply: {multiply_op_counts}")
-    print(f"Divide: {divide_op_counts}")
+    for op_count in op_counts:
+        print(f"{op_count[0]}: {op_count[1]}")
 
 
 def display_history(history_list):
@@ -104,9 +110,10 @@ while command:
         remove_history_entry(history, history_entry_id)
     elif command == "clear":
         history = []
+        print("Result: " + str(calc_result(history, calc_ops)))
     else:
         num = get_operand()
         append_history_entry(history, command, num)
-        print("Result: " + str(calc_result(history)))
+        print("Result: " + str(calc_result(history, calc_ops)))
 
     command = get_command()
