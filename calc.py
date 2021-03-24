@@ -1,3 +1,5 @@
+from functools import reduce
+
 
 def add_op(x, y):
     return x + y
@@ -55,14 +57,29 @@ def get_calc_op_by_command(calc_ops_list, command_name):
         if calc_op[2] == command_name:
             return calc_op
 
+# def perform_calc_op(accumulator, current):
+
+
+def perform_calc_op(result, history_entry):
+    calc_op = get_calc_op_by_command(calc_ops, history_entry[1])
+    calc_op_fn = calc_op[3]
+
+    # return value is the new accumulator/result
+    return calc_op_fn(result, history_entry[2])
+
 
 def calc_result(history_list, calc_ops_list):
-    result = 0
-    for entry in history_list:
-        calc_op = get_calc_op_by_command(calc_ops_list, entry[1])
-        calc_op_fn = calc_op[3]
-        result = calc_op_fn(result, entry[2])
-    return result
+
+    # more declarative
+    return reduce(perform_calc_op, history_list, 0)
+
+    # more imperative
+    # result = 0
+    # for entry in history_list:
+    #     calc_op = get_calc_op_by_command(calc_ops_list, entry[1])
+    #     calc_op_fn = calc_op[3]
+    #     result = calc_op_fn(result, entry[2])
+    # return result
 
 
 def display_operation_counts(history_list):
