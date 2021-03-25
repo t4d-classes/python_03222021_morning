@@ -1,21 +1,6 @@
 from functools import reduce
 
-
-class CalcOp:
-
-    def __init__(self, calc_op_id, label, cmd, fn):
-        self.id = calc_op_id
-        self.label = label
-        self.cmd = cmd
-        self.fn = fn
-
-
-class HistoryEntry:
-
-    def __init__(self, entry_id, op_name, op_value):
-        self.id = entry_id
-        self.op_name = op_name
-        self.op_value = op_value
+from models.history_entry import HistoryEntry
 
 class History:
 
@@ -67,7 +52,7 @@ class History:
 
         op_counts = []
 
-        for calc_op in calc_ops:
+        for calc_op in self.__calc_ops:
             op_counts.append(
                 (calc_op.label,
                     len([entry for entry in self.__history
@@ -95,54 +80,3 @@ class History:
 
     def clear_history(self):
         self.__history.clear()
-
-
-def input_int(prompt):
-    return int(input(prompt))
-
-
-def input_float(prompt):
-    return float(input(prompt))
-
-
-def get_operand():
-    return input_float("Please enter an operand: ")
-
-
-def get_command():
-    return input("Enter a command: ")
-
-
-def get_history_entry_id():
-    return input_int("Please enter a history entry id: ")
-
-
-calc_ops = [
-    CalcOp(1, "Add", "add", lambda x, y: x + y),
-    CalcOp(2, "Subtract", "subtract", lambda x, y: x - y),
-    CalcOp(3, "Multiply", "multiply", lambda x, y: x * y),
-    CalcOp(4, "Divide", "divide", lambda x, y: x / y),
-    CalcOp(5, "Exponent", "exponent", lambda x, y: x ** y),
-]
-
-history = History(calc_ops)
-
-command = "clear"
-
-while command:
-
-    if command == "history":
-        history.display_history()
-        history.display_operation_counts()
-    elif command == "remove":
-        history_entry_id = get_history_entry_id()
-        history.remove_history_entry(history_entry_id)
-    elif command == "clear":
-        history.clear_history()
-        print("Result: " + str(history.calc_result()))
-    else:
-        num = get_operand()
-        history.append_history_entry(command, num)
-        print("Result: " + str(history.calc_result()))
-
-    command = get_command()
