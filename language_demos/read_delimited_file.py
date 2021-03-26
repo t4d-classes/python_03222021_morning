@@ -25,5 +25,7 @@ def read_delimited_lines(file_handle, delimiter='|',
 
 with open("lorem.txt") as colors_file:
 
-    for line in read_delimited_lines(colors_file, "."):
-        print(line)
+    # for line in read_delimited_lines(colors_file, "."):
+    #     print(line)
+
+    print(list(read_delimited_lines(colors_file, ".")))
